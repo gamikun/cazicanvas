@@ -48,6 +48,24 @@ CanvasRenderingContext2D.prototype.star = function(
 	}
 }
 
+CanvasRenderingContext2D.prototype.grid = function(x, y, w, h, cw, ch) {
+	for (var xx = x; xx < w; xx += cw) {
+		this.moveTo(xx, 0);
+		this.lineTo(xx, h);
+	}
+
+	for (var yy = y; yy < h; yy += ch) {
+		this.moveTo(0, yy);
+		this.lineTo(w, yy);
+	}
+}
+
+CanvasRenderingContext2D.prototype.strokeGrid = function(x, y, w, h, cw, ch) {
+	this.beginPath();
+	this.grid(x, y, w, h, cw, ch);
+	this.stroke();
+}
+
 CanvasRenderingContext2D.prototype.zigzagLineTo = function(x, y) {
 	
 }

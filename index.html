@@ -22,11 +22,20 @@
 		cv = document.getElementById('lienzo');
 		cx = cv.getContext('2d');
 
+		cx.strokeStyle = '#333333';
+		cx.lineWidth = 1;
+		cx.strokeGrid(0, 0, cv.offsetWidth, cv.offsetHeight, 16, 16);
+
+		cx.beginPath();
 		cx.fillStyle = 'red';
 		cx.strokeStyle = 'white';
 		cx.lineWidth = 3;
 		cx.star(100, 100, 20, 40, 5);
 		cx.closePath();
+		cx.stroke();
+
+		cx.beginPath();
+		cx.circle(350, 200, 50);
 		cx.stroke();
 	}
 </script>

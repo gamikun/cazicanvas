@@ -12,33 +12,57 @@
 	</style>
 </head>
 <body>
-	<canvas id="lienzo" width="500" height="400"></canvas>
+	<canvas id="lienzo" width="700" height="400"></canvas>
 </body>
 <script src="src/cazicanvas.js"></script>
 <script>
 	var cv, cx;
 
+	function redrawEverything() {
+		cx.shouldDrawModel = true;
+
+		cx.textAlign = 'center';
+		cx.textBaseline = 'top';
+		cx.font = '20px Arial';
+
+		cx.strokeStyle = '#333333';
+		cx.fillStyle = '#ffffff';
+		cx.fontStyle = 'Arial 25px';
+		cx.lineWidth = 1;
+		cx.strokeGrid(0, 0, cv.offsetWidth, cv.offsetHeight, 16, 16);
+
+		cx.fillStyle = 'white';
+		cx.strokeStyle = 'white';
+		cx.lineWidth = 3;
+		cx.strokeStar(150, 130, 50, 85, 5);
+		cx.globalAlpha = 0.5;
+		cx.modelStar(150, 130, 50, 85, 5);
+		cx.globalAlpha = 1.0;
+		cx.fillText('strokeStar()', 150, 130 + 105);
+
+		cx.globalAlpha = 0.8;
+		cx.modelCircle(450, 130, 86);
+		cx.globalAlpha = 1.0;
+		cx.strokeCircle(450, 130, 85);
+		cx.fillText('strokeCircle()', 450, 130 + 105);
+
+		cx.textAlign = 'left';
+		cx.strokeRoundedRect(680, 45, 170, 170, 25);
+		cx.fillText('strokeRoundedRect()', 680, 45 + 190);
+	}
+
 	window.onload = function() {
 		cv = document.getElementById('lienzo');
 		cx = cv.getContext('2d');
 
-		cx.strokeStyle = '#333333';
-		cx.lineWidth = 1;
-		cx.strokeGrid(0, 0, cv.offsetWidth, cv.offsetHeight, 16, 16);
+		this.onresize();
+	}
 
-		cx.beginPath();
-		cx.fillStyle = 'red';
-		cx.strokeStyle = 'white';
-		cx.lineWidth = 3;
-		cx.star(100, 100, 20, 40, 5);
-		cx.closePath();
-		cx.stroke();
+	window.onresize = function() {
+		cv.width = window.innerWidth;
+		cv.height = window.innerHeight;
 
-		cx.beginPath();
-		cx.circle(350, 200, 50);
-		cx.stroke();
-
-		cx.strokeRoundedRect(50, 200, 100, 100, 25);
+		redrawEverything();
 	}
 </script>
 </html>

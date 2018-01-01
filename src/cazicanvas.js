@@ -69,3 +69,27 @@ CanvasRenderingContext2D.prototype.strokeGrid = function(x, y, w, h, cw, ch) {
 CanvasRenderingContext2D.prototype.zigzagLineTo = function(x, y) {
 	
 }
+
+CanvasRenderingContext2D.prototype.roundedRect = function(x, y, w, h, r) {
+	this.moveTo(x + r, y);
+	this.lineTo(x + w - r, y);
+	this.arcTo(x + w, y, x + w, y + r, r);
+	this.lineTo(x + w, y + x - r);
+	this.arcTo(x + w, y + h, x + w - r, y + h, r);
+	this.lineTo(x + r, y + h);
+	this.arcTo(x, y + h, x, y + h - r, r);
+	this.lineTo(x, y + r);
+	this.arcTo(x, y, x + r, y, r);
+}
+
+CanvasRenderingContext2D.prototype.strokeRoundedRect = function(x, y, w, h, r) {
+	this.beginPath();
+	this.roundedRect(x, y, w, h, r);
+	this.stroke();
+}
+
+CanvasRenderingContext2D.prototype.fillRoundedRect = function(x, y, w, h, r) {
+	this.beginPath();
+	this.roundedRect(x, y, w, h, r);
+	this.stroke();
+}

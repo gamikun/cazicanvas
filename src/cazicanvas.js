@@ -1,3 +1,10 @@
+/**
+ * cazicanvas 1.0, 2018/01/28
+ *
+ * @author Gamaliel Espinoza M. (gamaliel.espinoza@gmail.com)
+ *
+ */
+
 CanvasRenderingContext2D.prototype.circle = function(x, y, radius) {
 	this.arc(x, y, radius, 0, Math.PI * 2, 0);
 }
@@ -181,6 +188,29 @@ CanvasRenderingContext2D.prototype.strokeGrid = function(x, y, w, h, cw, ch) {
 	this.beginPath();
 	this.grid(x, y, w, h, cw, ch);
 	this.stroke();
+}
+
+CanvasRenderingContext2D.prototype.chess = function(x, y, w, h, cw, ch, c1, c2) {
+	var alt = false;
+	var sw = w / cw;
+	var sh = h / ch;
+
+	for (var yy = 0; yy < h; yy += cw) {
+		alt = !alt;
+		for (var xx = 0; xx < w; xx += ch) {
+			var index = xx * yy;
+
+			if (alt) {
+				this.fillStyle = c2;	
+			} else {
+				this.fillStyle = c1;
+			}
+
+			alt = !alt;
+
+			this.fillRect(xx, yy, cw, ch);
+		}
+	}
 }
 
 CanvasRenderingContext2D.prototype.zigzagLineTo = function(x, y) {

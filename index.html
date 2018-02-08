@@ -21,6 +21,7 @@
 	function redrawEverything() {
 		cx.shouldDrawModel = true;
 
+		cx.chess(0, 0, cv.offsetWidth, cv.offsetHeight, 64, 64, '#111', '#222');
 		cx.textAlign = 'center';
 		cx.textBaseline = 'top';
 		cx.font = '20px Arial';
@@ -49,6 +50,24 @@
 		cx.textAlign = 'left';
 		cx.strokeRoundedRect(680, 45, 170, 170, 25);
 		cx.fillText('strokeRoundedRect()', 680, 45 + 190);
+
+		var scale = 0.08;
+		cx.iterateLine(100 * scale, 300 * scale, 210 * scale, 410 * scale,
+			function(x, y) {
+				cx.fillCircle(x / scale, y / scale , 5);
+			}
+		)
+		cx.iterateLine(200 * scale, 300 * scale, 90 * scale, 410 * scale,
+			function(x, y) {
+				cx.fillCircle(x / scale, y / scale , 5);
+			}
+		)
+		cx.fillText('iterateLine()', 100, 45 + 390);
+
+		cx.iterateCircumference(450, 350, 60, 10, function(x, y) {
+			cx.fillCircle(x, y, 5);
+		});
+		cx.fillText('iterateCircumference()', 350, 45 + 390);
 	}
 
 	window.onload = function() {

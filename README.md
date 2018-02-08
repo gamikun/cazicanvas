@@ -26,6 +26,11 @@ A simpler way of drawing circles.
 * strokeStar
 * modelStar
 
+## Utils
+
+* **iterateCircumference**. given a center x and y, a radius and number of positions, you get a list of generated positions that correspondes to equidistant spots around an imaginary circle.
+* **iterateLine**. Given a point A and a B, you get all the posible positions (pixels) between them without leaving empty spaces.
+
 ## Others
 
 * **strokeGrid**. Adds a grid with specified dimensions.

@@ -1,5 +1,5 @@
 /**
- * cazicanvas 1.0, 2018/01/28
+ * cazicanvas 1.1.0, 2018/02/08
  *
  * @author Gamaliel Espinoza M. (gamaliel.espinoza@gmail.com)
  *
@@ -255,4 +255,48 @@ CanvasRenderingContext2D.prototype.iterateCircumference = function(
 
 		fn(vx, vy);
 	}
+}
+
+CanvasRenderingContext2D.prototype.iterateLine = function(
+	x1, y1, x2, y2, fn
+) {
+    var dx = Math.abs(x1 - x2);
+    var dy = Math.abs(y1 - y2);
+    var xaxis = (x2 - x1) < 0 ? -1 : 1;
+    var yaxis = (y2 - y1) < 0 ? -1 : 1;
+    var ratio, ix, iy;
+
+    if (dx === 0 && dy === 0) {
+        fn(x1, y1);
+    }
+
+    else if (dx > dy) {
+        ratio = dy / dx;
+        ix = 1 * xaxis;
+        iy = ratio * yaxis;
+        for (var i = 0; i <= dx; i++) {
+            var x = x1 + i * xaxis;
+            var y = Math.round(y1 + i * yaxis * ratio);
+            fn(x, y);
+        }
+    }
+
+    else if (dy > dx) {
+        ratio = dx / dy;
+        iy = 1 * yaxis;
+        ix = ratio * xaxis;
+        for (var i = 0; i <= dy; i++) {
+            var y = y1 + i * yaxis;
+            var x = Math.round(x1 + i * xaxis * ratio);
+            fn(x, y);
+        }
+    }
+
+    else {
+        for (var i = 0; i < dx; i++) {
+            var x = x1 + i * xaxis;
+            var y = y1 + i * yaxis;
+            fn(x, y);
+        }
+    }
 }

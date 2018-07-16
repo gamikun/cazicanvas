@@ -1,87 +1,98 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>You're gonna carry that wheight!</title>
-	<style type="text/css">
-		body { background: black; }
-		canvas {
-			position: fixed;
-			left: 0;
-			top: 0;
-		}
-	</style>
+    <title>You're gonna carry that wheight!</title>
+    <style type="text/css">
+        body { background: black; }
+        canvas {
+            position: fixed;
+            left: 0;
+            top: 0;
+        }
+    </style>
 </head>
 <body>
-	<canvas id="lienzo" width="700" height="400"></canvas>
+    <canvas id="lienzo" width="700" height="400"></canvas>
 </body>
 <script src="src/cazicanvas.js"></script>
 <script>
-	var cv, cx;
+    var cv, cx, cz;
+    var ccv;
 
-	function redrawEverything() {
-		cx.shouldDrawModel = true;
+    function redrawEverything() {
+        cz.shouldDrawModel = true;
+        cz.chess(0, 0, cv.offsetWidth, cv.offsetHeight, 64, 64, '#111', '#222');
+        cx.textAlign = 'center';
+        cx.textBaseline = 'top';
+        cx.font = '20px Arial';
 
-		cx.chess(0, 0, cv.offsetWidth, cv.offsetHeight, 64, 64, '#111', '#222');
-		cx.textAlign = 'center';
-		cx.textBaseline = 'top';
-		cx.font = '20px Arial';
+        cx.strokeStyle = '#333333';
+        cx.fillStyle = '#ffffff';
+        cx.lineWidth = 1;
+        cz.strokeGrid(0, 0, cv.offsetWidth, cv.offsetHeight, 16, 16);
 
-		cx.strokeStyle = '#333333';
-		cx.fillStyle = '#ffffff';
-		cx.fontStyle = 'Arial 25px';
-		cx.lineWidth = 1;
-		cx.strokeGrid(0, 0, cv.offsetWidth, cv.offsetHeight, 16, 16);
+        cx.fillStyle = 'white';
+        cx.strokeStyle = 'white';
+        cx.lineWidth = 3;
+        cz.strokeStar(150, 130, 50, 85, 5);
+        cx.globalAlpha = 0.5;
+        cz.modelStar(150, 130, 50, 85, 5);
+        cx.globalAlpha = 1.0;
+        cx.font = '18px Arial';
+        cx.fillText('strokeStar()', 150, 130 + 105);
 
-		cx.fillStyle = 'white';
-		cx.strokeStyle = 'white';
-		cx.lineWidth = 3;
-		cx.strokeStar(150, 130, 50, 85, 5);
-		cx.globalAlpha = 0.5;
-		cx.modelStar(150, 130, 50, 85, 5);
-		cx.globalAlpha = 1.0;
-		cx.fillText('strokeStar()', 150, 130 + 105);
+        cx.globalAlpha = 0.8;
+        cz.modelCircle(450, 130, 86);
+        cx.globalAlpha = 1.0;
+        cx.lineWidth = 3;
+        cz.strokeCircle(450, 130, 85);
+        cx.fillText('strokeCircle()', 450, 130 + 105);
 
-		cx.globalAlpha = 0.8;
-		cx.modelCircle(450, 130, 86);
-		cx.globalAlpha = 1.0;
-		cx.strokeCircle(450, 130, 85);
-		cx.fillText('strokeCircle()', 450, 130 + 105);
+        cx.textAlign = 'left';
+        cx.lineWidth = 3;
+        cz.strokeRoundedRect(680, 45, 170, 170, 25);
+        cx.fillText('strokeRoundedRect()', 680, 45 + 190);
 
-		cx.textAlign = 'left';
-		cx.strokeRoundedRect(680, 45, 170, 170, 25);
-		cx.fillText('strokeRoundedRect()', 680, 45 + 190);
+        var scale = 0.08;
+        cz.iterateLine(100 * scale, 300 * scale, 210 * scale, 410 * scale,
+            function(x, y) {
+                cz.fillCircle(x / scale, y / scale , 5);
+            }
+        )
+        cz.iterateLine(200 * scale, 300 * scale, 90 * scale, 410 * scale,
+            function(x, y) {
+                cz.fillCircle(x / scale, y / scale , 5);
+            }
+        )
+        cx.fillText('iterateLine()', 100, 45 + 390);
 
-		var scale = 0.08;
-		cx.iterateLine(100 * scale, 300 * scale, 210 * scale, 410 * scale,
-			function(x, y) {
-				cx.fillCircle(x / scale, y / scale , 5);
-			}
-		)
-		cx.iterateLine(200 * scale, 300 * scale, 90 * scale, 410 * scale,
-			function(x, y) {
-				cx.fillCircle(x / scale, y / scale , 5);
-			}
-		)
-		cx.fillText('iterateLine()', 100, 45 + 390);
+        cz.iterateCircumference(450, 350, 60, 10, function(x, y) {
+            cz.fillCircle(x, y, 5);
+        });
+        cx.fillText('iterateCircumference()', 350, 45 + 390);
 
-		cx.iterateCircumference(450, 350, 60, 10, function(x, y) {
-			cx.fillCircle(x, y, 5);
-		});
-		cx.fillText('iterateCircumference()', 350, 45 + 390);
-	}
+        cz.strokePolygon([
+            [680, 300], [800, 300],
+            [850, 400], [680, 380]
+        ]);
+        cz.modelPolygon([
+            [680, 300], [800, 300],
+            [850, 400], [680, 380]
+        ]);
+        cx.fillText('strokePolygon()', 680, 45 + 390);
+    }
 
-	window.onload = function() {
-		cv = document.getElementById('lienzo');
-		cx = cv.getContext('2d');
+    window.onload = function() {
+        cv = document.getElementById('lienzo');
+        cx = cv.getContext('2d');
+        cz = new CaziCanvas(cx);
+        this.onresize();
+    }
 
-		this.onresize();
-	}
-
-	window.onresize = function() {
-		cv.width = window.innerWidth;
-		cv.height = window.innerHeight;
-
-		redrawEverything();
-	}
+    window.onresize = function() {
+        cv.width = window.innerWidth,
+        cv.height = window.innerHeight;
+        redrawEverything();
+    }
 </script>
 </html>

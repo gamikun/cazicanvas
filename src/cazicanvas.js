@@ -1,264 +1,267 @@
 /**
- * cazicanvas 1.1.0, 2018/02/08
+ * cazicanvas 1.4.0, 2018/02/08
  *
  * @author Gamaliel Espinoza M. (gamaliel.espinoza@gmail.com)
  *
  */
 
-CanvasRenderingContext2D.prototype.circle = function(x, y, radius) {
-	this.arc(x, y, radius, 0, Math.PI * 2, 0);
+var CaziCanvas = function(context) {
+    this.cx = context;
+};
+
+CaziCanvas.prototype.circle = function(x, y, radius) {
+    this.arc(x, y, radius, 0, Math.PI * 2, 0);
 }
 
-CanvasRenderingContext2D.prototype.strokeCircle = function(x, y, radius) {
-	this.beginPath();
-	this.arc(x, y, radius, 0, Math.PI * 2, 0);
-	this.stroke();
+CaziCanvas.prototype.strokeCircle = function(x, y, radius) {
+    this.cx.beginPath();
+    this.cx.arc(x, y, radius, 0, Math.PI * 2, 0);
+    this.cx.stroke();
 }
 
-CanvasRenderingContext2D.prototype.fillCircle = function(x, y, radius) {
-	this.beginPath();
-	this.arc(x, y, radius, 0, Math.PI * 2, 0);
-	this.fill();
+CaziCanvas.prototype.fillCircle = function(x, y, radius) {
+    this.cx.beginPath();
+    this.cx.arc(x, y, radius, 0, Math.PI * 2, 0);
+    this.cx.fill();
 }
 
-CanvasRenderingContext2D.prototype.perfectPolygon = function(
-	x, y, radius, sides, rotation
+CaziCanvas.prototype.perfectPolygon = function(
+    x, y, radius, sides, rotation
 ) {
-	if (sides < 3) {
-		return;
-	}
+    if (sides < 3) {
+        return;
+    }
 
-	if (!rotation) {
-		rotation = 0;
-	}
+    if (!rotation) {
+        rotation = 0;
+    }
 
-	var v = Math.PI / sides * 2;
-	var vx, vy, d;
+    var v = Math.PI / sides * 2;
+    var vx, vy, d;
 
-	for (var i = 0; i < sides; i++) {
-		d = i * v + rotation;
-		vx = radius * Math.cos(d) + x;
-		vy = radius * Math.sin(d) + y;
+    for (var i = 0; i < sides; i++) {
+        d = i * v + rotation;
+        vx = radius * Math.cos(d) + x;
+        vy = radius * Math.sin(d) + y;
 
-		this.lineTo(vx, vy);
-	}
+        this.cx.lineTo(vx, vy);
+    }
 }
 
-CanvasRenderingContext2D.prototype.star = function(
-	x, y, innerRadius, outerRadius, spikes
+CaziCanvas.prototype.star = function(
+    x, y, innerRadius, outerRadius, spikes
 ) {
-	var vectors = spikes * 2;
-	var v = Math.PI / vectors * 2;
-	var vx, vy, d;
-	var alt = false;
-	
-	var radius;
+    var vectors = spikes * 2;
+    var v = Math.PI / vectors * 2;
+    var vx, vy, d;
+    var alt = false;
+    
+    var radius;
 
-	for (var i = 0; i < vectors; i++) {
-		d = i * v;
-		
-		radius = alt ? innerRadius : outerRadius;
-		vx = radius * Math.cos(d) + x;
-		vy = radius * Math.sin(d) + y;
+    for (var i = 0; i < vectors; i++) {
+        d = i * v;
+        
+        radius = alt ? innerRadius : outerRadius;
+        vx = radius * Math.cos(d) + x;
+        vy = radius * Math.sin(d) + y;
 
-		this.lineTo(vx, vy);
+        this.cx.lineTo(vx, vy);
 
-		alt = !alt;
-	}
+        alt = !alt;
+    }
 }
 
-CanvasRenderingContext2D.prototype.strokeStar = function(
-	x, y, innerRadius, outerRadius, spikes
+CaziCanvas.prototype.strokeStar = function(
+    x, y, innerRadius, outerRadius, spikes
 ) {
-	this.beginPath();
-	this.star(x, y, innerRadius, outerRadius, spikes);
-	this.closePath();
-	this.stroke();
+    this.cx.beginPath();
+    this.star(x, y, innerRadius, outerRadius, spikes);
+    this.cx.closePath();
+    this.cx.stroke();
 }
 
-CanvasRenderingContext2D.prototype.modelStar = function(
-	x, y, innerRadius, outerRadius, spikes
+CaziCanvas.prototype.modelStar = function(
+    x, y, innerRadius, outerRadius, spikes
 ) {
-	var self = this;
-	var lnw = this.lineWidth;
-	var lnd = this.getLineDash();
-	var fnt = this.font;
-	var txtbl = this.textBaseline;
+    var self = this;
+    var lnw = this.lineWidth;
+    var lnd = this.cx.getLineDash();
+    var fnt = this.font;
+    var txtbl = this.textBaseline;
 
-	this.textBaseline = 'middle';
-	this.font = '12px Arial';
-	this.setLineDash([5, 3]);
-	this.lineWidth = 1;
+    this.cx.textBaseline = 'middle';
+    this.cx.font = '12px Arial';
+    this.cx.setLineDash([5, 3]);
+    this.cx.lineWidth = 1;
 
-	this.strokeCircle(x, y, innerRadius);
-	this.strokeCircle(x, y, outerRadius);
+    this.strokeCircle(x, y, innerRadius);
+    this.strokeCircle(x, y, outerRadius);
 
-	// draw points
-	var pointIndex = 0;
-	var orad = outerRadius + 15;
-	var irad = innerRadius + 15;
-	var alt = false;
-	this.iterateCircumference(x, y, orad, spikes, function(x, y) {
-		self.fillText(pointIndex.toString(), x, y);
-		pointIndex += 2;
-	});
-	pointIndex = 0;
-	this.iterateCircumference(x, y, outerRadius, spikes, function(x, y) {
-		self.strokeCircle(x, y, 5);
-		pointIndex += 2;
-	});
-	pointIndex = 0;
-	this.iterateCircumference(x, y, innerRadius, spikes * 2, function(x, y) {
-		if (pointIndex % 2 != 0) {
-			self.strokeCircle(x, y, 5);
-		}
-		pointIndex += 1;
-	});	
-	pointIndex = 0;
-	this.iterateCircumference(x, y, irad, spikes * 2, function(x, y) {
-		if (pointIndex % 2 != 0) {
-			self.fillText(pointIndex.toString(), x, y);
-		}
-		pointIndex += 1;
-	});
+    // draw points
+    var pointIndex = 0;
+    var orad = outerRadius + 15;
+    var irad = innerRadius + 15;
+    var alt = false;
+    this.iterateCircumference(x, y, orad, spikes, function(x, y) {
+        self.cx.fillText(pointIndex.toString(), x, y);
+        pointIndex += 2;
+    });
+    pointIndex = 0;
+    this.iterateCircumference(x, y, outerRadius, spikes, function(x, y) {
+        self.strokeCircle(x, y, 5);
+        pointIndex += 2;
+    });
+    pointIndex = 0;
+    this.iterateCircumference(x, y, innerRadius, spikes * 2, function(x, y) {
+        if (pointIndex % 2 != 0) {
+            self.strokeCircle(x, y, 5);
+        }
+        pointIndex += 1;
+    }); 
+    pointIndex = 0;
+    this.iterateCircumference(x, y, irad, spikes * 2, function(x, y) {
+        if (pointIndex % 2 != 0) {
+            self.cx.fillText(pointIndex.toString(), x, y);
+        }
+        pointIndex += 1;
+    });
 
-	// draw center
-	this.fillCircle(x, y, 3);
-	//this.fillText('hola', x, y);
-	this.font = '10px Arial';
-	this.textBaseline = 'top';
-	this.fillText("(" + x.toString() + "," + y.toString() + ")", x, y + 5);
+    // draw center
+    this.fillCircle(x, y, 3);
+    this.cx.font = '10px Arial';
+    this.cx.textBaseline = 'top';
+    this.cx.fillText("(" + x.toString() + "," + y.toString() + ")", x, y + 5);
 
-	// draw lines
-	this.beginPath();
-	this.moveTo(x, y);
-	this.lineTo(x, y - innerRadius);
-	this.stroke();
-	
-	// reset state
-	this.setLineDash(lnd);
-	this.textBaseline = txtbl;
-	this.lineWidth = lnw;
-	this.font = fnt;
+    // draw lines
+    this.cx.beginPath();
+    this.cx.moveTo(x, y);
+    this.cx.lineTo(x, y - innerRadius);
+    this.cx.stroke();
+    
+    // reset state
+    this.cx.setLineDash(lnd);
+    this.cx.textBaseline = txtbl;
+    this.cx.lineWidth = lnw;
+    this.cx.font = fnt;
 }
 
-CanvasRenderingContext2D.prototype.modelCircle = function(x, y, radius) {
-	var lnw = this.lineWidth;
-	var dsh = this.getLineDash();
-	var fnt = this.font;
-	var bln = this.textBaseline
+CaziCanvas.prototype.modelCircle = function(x, y, radius) {
+    var lnw = this.cx.lineWidth;
+    var dsh = this.cx.getLineDash();
+    var fnt = this.cx.font;
+    var bln = this.cx.textBaseline;
 
-	this.lineWidth = 1;
-	this.setLineDash([5, 3]);
-	this.font = '12px Arial';
+    this.cx.lineWidth = 1;
+    this.cx.setLineDash([5, 3]);
+    this.cx.font = '12px Arial';
 
-	this.beginPath();
-	this.moveTo(x, y);
-	this.lineTo(x + radius, y);
-	this.stroke();
+    this.cx.beginPath();
+    this.cx.moveTo(x, y);
+    this.cx.lineTo(x + radius, y);
+    this.cx.stroke();
 
-	//this.strokeCircle(x, y, 5);
-	this.fillText("r = " + radius.toString(), x + radius / 2, y + 5);
-	this.font = '10px Arial';
-	this.textBaseline = 'bottom';
-	this.fillCircle(x, y, 3);
-	this.fillText("(" + x.toString() + "," + y.toString() + ")", x, y - 7);
-	
-	this.strokeCircle(x, y, radius);
+    //this.strokeCircle(x, y, 5);
+    this.cx.fillText("r = " + radius.toString(), x + radius / 2, y + 5);
+    this.cx.font = '10px Arial';
+    this.cx.textBaseline = 'bottom';
+    this.fillCircle(x, y, 3);
+    this.cx.fillText("(" + x.toString() + "," + y.toString() + ")", x, y - 7);
+    
+    this.strokeCircle(x, y, radius);
 
-	this.textBaseline = bln;
-	this.font = fnt;
-	this.lineWidth = lnw;
-	this.setLineDash(dsh);
+    this.cx.textBaseline = bln;
+    this.cx.font = fnt;
+    this.cx.lineWidth = lnw;
+    this.cx.setLineDash(dsh);
 }
 
-CanvasRenderingContext2D.prototype.grid = function(x, y, w, h, cw, ch) {
-	for (var xx = x; xx < w; xx += cw) {
-		this.moveTo(xx, 0);
-		this.lineTo(xx, h);
-	}
+CaziCanvas.prototype.grid = function(x, y, w, h, cw, ch) {
+    for (var xx = x; xx < w; xx += cw) {
+        this.cx.moveTo(xx, 0);
+        this.cx.lineTo(xx, h);
+    }
 
-	for (var yy = y; yy < h; yy += ch) {
-		this.moveTo(0, yy);
-		this.lineTo(w, yy);
-	}
+    for (var yy = y; yy < h; yy += ch) {
+        this.cx.moveTo(0, yy);
+        this.cx.lineTo(w, yy);
+    }
 }
 
-CanvasRenderingContext2D.prototype.strokeGrid = function(x, y, w, h, cw, ch) {
-	this.beginPath();
-	this.grid(x, y, w, h, cw, ch);
-	this.stroke();
+CaziCanvas.prototype.strokeGrid = function(x, y, w, h, cw, ch) {
+    this.cx.beginPath();
+    this.grid(x, y, w, h, cw, ch);
+    this.cx.stroke();
 }
 
-CanvasRenderingContext2D.prototype.chess = function(x, y, w, h, cw, ch, c1, c2) {
-	var alt = false;
-	var sw = w / cw;
-	var sh = h / ch;
+CaziCanvas.prototype.chess = function(x, y, w, h, cw, ch, c1, c2) {
+    var alt = false;
+    var sw = w / cw;
+    var sh = h / ch;
 
-	for (var yy = 0; yy < h; yy += cw) {
-		alt = !alt;
-		for (var xx = 0; xx < w; xx += ch) {
-			var index = xx * yy;
+    for (var yy = 0; yy < h; yy += cw) {
+        alt = !alt;
+        for (var xx = 0; xx < w; xx += ch) {
+            var index = xx * yy;
 
-			if (alt) {
-				this.fillStyle = c2;	
-			} else {
-				this.fillStyle = c1;
-			}
+            if (alt) {
+                this.cx.fillStyle = c2;    
+            } else {
+                this.cx.fillStyle = c1;
+            }
 
-			alt = !alt;
+            alt = !alt;
 
-			this.fillRect(xx, yy, cw, ch);
-		}
-	}
+            this.cx.fillRect(xx, yy, cw, ch);
+        }
+    }
 }
 
-CanvasRenderingContext2D.prototype.zigzagLineTo = function(x, y) {
-	
+CaziCanvas.prototype.zigzagLineTo = function(x, y) {
+    
 }
 
-CanvasRenderingContext2D.prototype.roundedRect = function(x, y, w, h, r) {
-	this.moveTo(x + r, y);
-	this.lineTo(x + w - r, y);
-	this.arcTo(x + w, y, x + w, y + r, r);
-	this.lineTo(x + w, y + h - r);
-	this.arcTo(x + w, y + h, x + w - r, y + h, r);
-	this.lineTo(x + r, y + h);
-	this.arcTo(x, y + h, x, y + h - r, r);
-	this.lineTo(x, y + r);
-	this.arcTo(x, y, x + r, y, r);
+CaziCanvas.prototype.roundedRect = function(x, y, w, h, r) {
+    this.cx.moveTo(x + r, y);
+    this.cx.lineTo(x + w - r, y);
+    this.cx.arcTo(x + w, y, x + w, y + r, r);
+    this.cx.lineTo(x + w, y + h - r);
+    this.cx.arcTo(x + w, y + h, x + w - r, y + h, r);
+    this.cx.lineTo(x + r, y + h);
+    this.cx.arcTo(x, y + h, x, y + h - r, r);
+    this.cx.lineTo(x, y + r);
+    this.cx.arcTo(x, y, x + r, y, r);
 }
 
-CanvasRenderingContext2D.prototype.strokeRoundedRect = function(x, y, w, h, r) {
-	this.beginPath();
-	this.roundedRect(x, y, w, h, r);
-	this.stroke();
+CaziCanvas.prototype.strokeRoundedRect = function(x, y, w, h, r) {
+    this.cx.beginPath();
+    this.roundedRect(x, y, w, h, r);
+    this.cx.stroke();
 }
 
-CanvasRenderingContext2D.prototype.fillRoundedRect = function(x, y, w, h, r) {
-	this.beginPath();
-	this.roundedRect(x, y, w, h, r);
-	this.stroke();
+CaziCanvas.prototype.fillRoundedRect = function(x, y, w, h, r) {
+    this.cx.beginPath();
+    this.roundedRect(x, y, w, h, r);
+    this.cx.stroke();
 }
 
-CanvasRenderingContext2D.prototype.iterateCircumference = function(
-	x, y, radius, segments, fn
+CaziCanvas.prototype.iterateCircumference = function(
+    x, y, radius, segments, fn
 ) {
-	var v = Math.PI / segments * 2;
-	var vx, vy, d;
+    var v = Math.PI / segments * 2;
+    var vx, vy, d;
 
-	for (var i = 0; i < segments; i++) {
-		d = i * v;
-		
-		vx = radius * Math.cos(d) + x;
-		vy = radius * Math.sin(d) + y;
+    for (var i = 0; i < segments; i++) {
+        d = i * v;
+        
+        vx = radius * Math.cos(d) + x;
+        vy = radius * Math.sin(d) + y;
 
-		fn(vx, vy);
-	}
+        fn(vx, vy);
+    }
 }
 
-CanvasRenderingContext2D.prototype.iterateLine = function(
-	x1, y1, x2, y2, fn
+CaziCanvas.prototype.iterateLine = function(
+    x1, y1, x2, y2, fn
 ) {
     var dx = Math.abs(x1 - x2);
     var dy = Math.abs(y1 - y2);
@@ -299,4 +302,81 @@ CanvasRenderingContext2D.prototype.iterateLine = function(
             fn(x, y);
         }
     }
+}
+
+CaziCanvas.prototype.polygon = function(points) {
+    var x, y;
+    this.cx.moveTo(points[0][0], points[0][1]);
+    for (var index = 1; index < points.length; index++) {
+        x = points[index][0];
+        y = points[index][1];
+        cx.lineTo(x, y);
+    }
+};
+
+CaziCanvas.prototype.fillPolygon = function(points) {
+    this.cx.beginPath();
+    this.polygon(points);
+    this.cx.closePath();
+    this.cx.fill();
+}
+
+CaziCanvas.prototype.strokePolygon = function(points) {
+    this.cx.beginPath();
+    this.polygon(points);
+    this.cx.closePath();
+    this.cx.stroke();
+}
+
+CaziCanvas.prototype.modelPolygon = function(points) {
+    var top    = 0xFFFF;
+    var bottom = 0x0000;
+    var left   = 0xFFFF;
+    var right  = 0x0000;
+    var lnd = this.cx.getLineDash();
+    var lw = this.cx.lineWidth;
+    var p, cx, cy;
+
+    for (var index = 0; index < points.length; index++) {
+        p = points[index];
+        if (p[1] < top)
+            top = p[1];
+        if (p[1] > bottom)
+            bottom = p[1];
+        if (p[0] < left)
+            left = p[0];
+        if (p[0] > right)
+            right = p[0];
+    }
+
+    cx = ((right -   left) / 2) + left;
+    cy = ((top   - bottom) / 2) +  top;
+
+    this.cx.setLineDash([5, 3]);
+    this.cx.lineWidth = 1;
+    this.cx.moveTo(left, top);
+    this.cx.lineTo(right, top);
+    this.cx.lineTo(right, bottom);
+    this.cx.lineTo(left, bottom);
+    this.cx.closePath();
+    this.cx.stroke();
+
+    // draw points
+    this.fillCircle(left, top, 5);
+    this.fillCircle(right, top, 5);
+    this.fillCircle(right, bottom, 5);
+    this.fillCircle(left, bottom, 5);
+
+    // center
+    this.cx.fillStyle = '#ffffff';
+    this.cx.lineWidth = 2;
+    this.cx.beginPath();
+    this.cx.moveTo(cx - 5, cy    );
+    this.cx.lineTo(cx + 5, cy    );
+    this.cx.moveTo(cx,     cy - 5);
+    this.cx.lineTo(cx,     cy + 5);
+    this.cx.stroke();
+
+    this.cx.lineWidth = lw;
+    this.cx.setLineDash(lnd);
 }
